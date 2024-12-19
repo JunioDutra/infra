@@ -1,0 +1,33 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/
+.terraform.lock.hcl
+
+# Docker files
+*.dockerfile
+docker-compose.override.yml
+.dockerignore
+
+# General files
+*.log
+*.bak
+*.swp
+*.tmp
+*.temp
+*.old
+*.orig
+*.rej
+*.swo
+*.swn
+*.swp
+*.swr
+*.swx
+*.DS_Store
+Thumbs.db
