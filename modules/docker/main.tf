@@ -26,6 +26,11 @@ resource "docker_image" "postgres" {
   keep_locally = false
 }
 
+resource "docker_image" "homepage" {
+  name         = "ghcr.io/gethomepage/homepage:latest"
+  keep_locally = false
+}
+
 resource "docker_volume" "nginx_proxy_manager_data" {
   name = "nginx-proxy-manager-data"
 }
@@ -137,6 +142,50 @@ resource "docker_container" "postgres" {
   ports {
     internal = 5432
     external = 15432
+  }
+
+  lifecycle {
+    ignore_changes = [
+      command,
+      entrypoint,
+      hostname,
+      ipc_mode,
+      log_driver,
+      network_mode,
+      runtime,
+      security_opts,
+      shm_size,
+      stop_signal,
+      stop_timeout,
+    ]
+  }
+}
+
+resource "docker_container" "homepage" {
+  image = docker_image.homepage.image_id
+  name  = "homepage"
+
+  env = [
+  ]
+
+  volumes {
+    container_path = "/app/config"
+    host_path      = "/home/srv/docker-volumes/homepage/config"
+  }
+
+  volumes {
+    container_path = "/var/run/docker.sock"
+    host_path      = "/var/run/docker.sock"
+  }
+
+  restart = "unless-stopped"
+
+  tty = true
+  stdin_open = true
+
+  ports {
+    internal = 3000
+    external = 3000
   }
 
   lifecycle {

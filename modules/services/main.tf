@@ -104,3 +104,47 @@ resource "nginxproxymanager_proxy_host" "portainer" {
 
   advanced_config = ""
 }
+
+resource "nginxproxymanager_proxy_host" "router" {
+  domain_names = ["router.dblsoft.lan"]
+
+  forward_scheme = "http"
+  forward_host   = "192.168.2.1"
+  forward_port   = 80
+
+  caching_enabled         = false
+  allow_websocket_upgrade = false
+  block_exploits          = false
+
+  access_list_id = 0 # Publicly Accessible
+
+  certificate_id  = 0 # No Certificate
+  ssl_forced      = false
+  hsts_enabled    = false
+  hsts_subdomains = false
+  http2_support   = false
+
+  advanced_config = ""
+}
+
+resource "nginxproxymanager_proxy_host" "dashboard" {
+  domain_names = ["dblsoft.lan"]
+
+  forward_scheme = "http"
+  forward_host   = "192.168.2.177"
+  forward_port   = 3000
+
+  caching_enabled         = false
+  allow_websocket_upgrade = false
+  block_exploits          = false
+
+  access_list_id = 0 # Publicly Accessible
+
+  certificate_id  = 0 # No Certificate
+  ssl_forced      = false
+  hsts_enabled    = false
+  hsts_subdomains = false
+  http2_support   = false
+
+  advanced_config = ""
+}
