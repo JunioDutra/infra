@@ -18,7 +18,7 @@ resource "docker_image" "azpagent" {
 
 resource "docker_container" "azpagent" {
   image = docker_image.azpagent.image_id
-  name  = "azpagent"
+  name  = "azpagent-arm-2"
 
   env = [
      "AZP_URL=https://dbl.visualstudio.com/",
@@ -28,6 +28,11 @@ resource "docker_container" "azpagent" {
   ]
 
   restart = "unless-stopped"
+
+  volumes {
+    container_path = "/var/run/docker.sock"
+    host_path      = "/var/run/docker.sock"
+  }
 
   lifecycle {
     ignore_changes = [

@@ -31,6 +31,12 @@ resource "docker_image" "homepage" {
   keep_locally = false
 }
 
+resource "docker_image" "jellyfin" {
+  name         = "jellyfin/jellyfin"
+  keep_locally = false
+}
+
+
 resource "docker_volume" "nginx_proxy_manager_data" {
   name = "nginx-proxy-manager-data"
 }
@@ -41,6 +47,14 @@ resource "docker_volume" "nginx_proxy_manager_letsencrypt" {
 
 resource "docker_volume" "postgres" {
   name = "postgres"
+}
+
+resource "docker_volume" "jellyfin_cache" {
+  name = "jellyfin-cache"
+}
+
+resource "docker_volume" "jellyfin_config" {
+  name = "jellyfin-config"
 }
 
 resource "docker_container" "cloudflared" {
@@ -179,10 +193,60 @@ resource "docker_container" "homepage" {
   }
 
   restart = "unless-stopped"
-
   tty = true
   stdin_open = true
 
+  ports {
+    internal = 3000
+    external = 3000
+  }
+
+  lifecycle {
+    ignore_changes = [
+      command,
+      entrypoint,
+      hostname,
+      ipc_mode,
+      log_driver,
+      network_mode,
+      runtime,
+      security_opts,
+      shm_size,
+      stop_signal,
+      stop_timeout,
+    ]
+  }
+}
+
+resource "docker_container" "jellyfin" {
+  image = docker_image.jellyfin.image_id
+  name  = "jellyfin"
+
+  env = [
+  ]
+
+  volumes {
+    volume_name    = docker_volume.jellyfin_cache.name
+    container_path = "/cache"
+  }
+
+  volumes {
+    volume_name    = docker_volume.jellyfin_config.name
+    container_path = "/config"
+  }
+  volumes { 
+    container_path = "/media"
+    host_path      = "/home/srv/docker-volumes/jellyfin/media"
+  }
+
+  user = "1001:1001"
+
+  restart = "unless-stopped"
+  network_mode = "host"
+
+  tty = true
+  stdin_open = true
+   
   ports {
     internal = 3000
     external = 3000
