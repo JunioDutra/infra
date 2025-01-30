@@ -268,3 +268,49 @@ resource "docker_container" "jellyfin" {
     ]
   }
 }
+
+resource "docker_image" "open_webui" {
+  name         = "ghcr.io/open-webui/open-webui:main"
+  keep_locally = false
+}
+
+resource "docker_volume" "open_webui" {
+  name = "open-webui"
+}
+
+resource "docker_container" "open_webui" {
+  image = docker_image.open_webui.image_id
+  name  = "open-webui"
+
+  env = [
+    "OLLAMA_BASE_URL=http://ubuntu-ai:11434/"
+  ]
+
+  volumes {
+    volume_name    = docker_volume.open_webui.name
+    container_path = "/app/backend/data"
+  }
+
+  restart = "unless-stopped"
+
+  ports {
+    internal = 8080
+    external = 13099
+  }
+
+  lifecycle {
+    ignore_changes = [
+      command,
+      entrypoint,
+      hostname,
+      ipc_mode,
+      log_driver,
+      network_mode,
+      runtime,
+      security_opts,
+      shm_size,
+      stop_signal,
+      stop_timeout,
+    ]
+  }
+}
