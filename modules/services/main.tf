@@ -157,6 +157,28 @@ resource "nginxproxymanager_proxy_host" "open_webui" {
   forward_port   = 13099
 
   caching_enabled         = false
+  allow_websocket_upgrade = true
+  block_exploits          = false
+
+  access_list_id = 0 # Publicly Accessible
+
+  certificate_id  = 0 # No Certificate
+  ssl_forced      = false
+  hsts_enabled    = false
+  hsts_subdomains = false
+  http2_support   = true
+
+  advanced_config = ""
+}
+
+resource "nginxproxymanager_proxy_host" "system-services" {
+  domain_names = ["system-services.dblsoft.lan"]
+
+  forward_scheme = "http"
+  forward_host   = "ubuntu-ai"
+  forward_port   = 8000
+
+  caching_enabled         = false
   allow_websocket_upgrade = false
   block_exploits          = false
 
