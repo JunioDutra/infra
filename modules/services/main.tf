@@ -39,6 +39,17 @@ resource "postgresql_database" "iam" {
   encoding               = "UTF8"
 }
 
+resource "postgresql_database" "ollepaf" {
+  name                   = "ollepaf"
+  owner                  = "postgres"
+  template               = "template0"
+  lc_collate             = "C"
+  connection_limit       = -1
+  allow_connections      = true
+  alter_object_ownership = true
+  encoding               = "UTF8"
+}
+
 resource "nginxproxymanager_proxy_host" "database" {
   domain_names = ["db.dblsoft.lan"]
 

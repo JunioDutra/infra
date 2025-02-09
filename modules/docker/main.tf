@@ -22,7 +22,7 @@ resource "docker_image" "nginx_proxy_manager" {
 }
 
 resource "docker_image" "postgres" {
-  name         = "postgres:latest"
+  name         = "pgvector/pgvector:pg17"
   keep_locally = false
 }
 
